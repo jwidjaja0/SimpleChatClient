@@ -14,6 +14,10 @@ public class ClientSend implements Runnable{
     public ClientSend(Socket socket, BlockingQueue<Packet> outgoingQueue) {
         this.socket = socket;
         this.outgoingQueue = outgoingQueue;
+        System.out.println("clientSend started");
+
+        Thread self = new Thread(this);
+        self.start();
     }
 
     @Override

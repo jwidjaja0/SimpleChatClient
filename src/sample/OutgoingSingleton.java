@@ -20,6 +20,7 @@ public class OutgoingSingleton {
 
     public void sendMessage(String messageType, Serializable message){
         try {
+            System.out.println("singleton putting to queue");
             outgoingQueue.put(new Packet(messageType, userID, message));
         } catch (InterruptedException e) {
             e.printStackTrace();

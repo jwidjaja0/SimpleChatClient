@@ -66,6 +66,7 @@ public class SignupController {
 
     private void sendMessage(){
         if(!signUpRequest.equals(null)){
+            System.out.println("putting to singleton");
             OutgoingSingleton.getInstance().sendMessage("SignUpRequest", signUpRequest);
         }
         else{
