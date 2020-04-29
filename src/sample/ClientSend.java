@@ -20,7 +20,7 @@ public class ClientSend{
 
     public void sendMessage(String messageType, Serializable message){
         try {
-            outgoingQueue.put(new Packet(messageType, userID, message));
+            outgoingQueue.take(new Packet(messageType, userID, message));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

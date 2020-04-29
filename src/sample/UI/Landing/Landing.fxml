@@ -18,12 +18,12 @@
          <children>
             <AnchorPane prefHeight="100.0" prefWidth="370.0">
                <children>
-                  <Button layoutX="90.0" layoutY="25.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="119.0" text="Login" />
+                  <Button fx:id="loginButton" layoutX="90.0" layoutY="25.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="119.0" text="Login" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="100.0" prefWidth="372.0">
                <children>
-                  <Button layoutX="91.0" layoutY="25.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="119.0" text="Sign Up" />
+                  <Button fx:id="signUpButton" layoutX="91.0" layoutY="25.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="119.0" text="Sign Up" />
                </children>
             </AnchorPane>
          </children>

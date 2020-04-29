@@ -29,7 +29,7 @@ public class Client implements Runnable{
 
         clientReceive = new ClientReceive(serverConnection, incomingQueue);
         //clientPublish = new ClientPublish(incomingQueue);
-
+        ClientSend.getInstance().setOutgoingQueue(outgoingQueue);
     }
 
     @Override
