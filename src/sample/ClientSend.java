@@ -2,39 +2,33 @@ package sample;
 
 import com.SimpleChat.Messages.Packet;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
-public class ClientSend{
-
-    private static ClientSend instance = new ClientSend();
-    private String userID;
+public class ClientSend implements Runnable{
+    private Socket socket;
     private BlockingQueue<Packet> outgoingQueue;
 
-    private ClientSend(){
-    }
-
-    public static ClientSend getInstance() {
-        return instance;
-    }
-
-    public void sendMessage(String messageType, Serializable message){
-        try {
-            outgoingQueue.take(new Packet(messageType, userID, message));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void logOut(){
-        userID = null;
-    }
-
-    public void setOutgoingQueue(BlockingQueue<Packet> outgoingQueue) {
+    public ClientSend(Socket socket, BlockingQueue<Packet> outgoingQueue) {
+        this.socket = socket;
         this.outgoingQueue = outgoingQueue;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    @Override
+    public void run() {
+
+        try {
+            ObjectOutputStream toServer = new ObjectOutputStream(socket.getOutputStream());
+            while(true){
+                System.out.println("Sending message to server");
+                toServer.writeObject(outgoingQueue.take());
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("ClientSend closing");
+        }
     }
 }
