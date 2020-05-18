@@ -16,6 +16,7 @@ public class Client implements Runnable{
     private ClientReceive clientReceive;
     private ClientPublish clientPublish;
     private ClientSend clientSend;
+    private MessageHandler messageHandler;
 
     private List<Chatroom> chatroomList;
     private BlockingQueue<Packet> outgoingQueue;
@@ -30,6 +31,7 @@ public class Client implements Runnable{
 
         clientReceive = new ClientReceive(serverConnection, incomingQueue);
         clientSend = new ClientSend(serverConnection, outgoingQueue);
+        messageHandler = new MessageHandler();
 
         //clientPublish = new ClientPublish(incomingQueue);
         OutgoingSingleton.getInstance().setOutgoingQueue(outgoingQueue);
@@ -42,6 +44,7 @@ public class Client implements Runnable{
             try {
                 incomingQueue.take();
                 System.out.println("Received message");
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
