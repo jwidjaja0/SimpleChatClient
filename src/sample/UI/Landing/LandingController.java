@@ -1,6 +1,10 @@
 package sample.UI.Landing;
 
-import com.SimpleChat.Messages.Login.SignUpResponse;
+import com.SimpleChat.Messages.Login.LoginFail;
+import com.SimpleChat.Messages.Login.LoginSuccess;
+import com.SimpleChat.Messages.Login.SignUpFail;
+import com.SimpleChat.Messages.Login.SignUpSuccess;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -8,8 +12,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Client;
+import sample.FailHandler;
+import sample.UI.Alert.AlertBox;
+import sample.UI.Login.LoginController;
+import sample.UI.Login.SignupController;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -21,18 +30,26 @@ public class LandingController implements Observer {
     @FXML
     Button signUpButton;
 
-    Stage stage;
+    private Stage stage;
+    private LoginController loginController;
+    private SignupController signupController;
 
     public void initialize(){
+
+
         signUpButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 try {
-                    Parent signupRoot = FXMLLoader.load(getClass().getResource("../Login/Signup.fxml"));
-                    stage = new Stage();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("../Login/Signup.fxml"));
+                    Parent signupRoot = loader.load();
+                    signupController = loader.getController();
+
+                    Stage stage = new Stage();
+                    stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setTitle("SignUp");
                     stage.setScene(new Scene(signupRoot));
-                    stage.show();
+                    stage.showAndWait();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -44,8 +61,11 @@ public class LandingController implements Observer {
             @Override
             public void handle(ActionEvent actionEvent) {
                 try {
-                    Parent loginRoot = FXMLLoader.load(getClass().getResource("../Login/Login.fxml"));
-                    stage = new Stage();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("../Login/Login.fxml"));
+                    Parent loginRoot = loader.load();
+                    loginController = loader.getController();
+                    Stage stage = new Stage();
+                    stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setTitle("Login");
                     stage.setScene(new Scene(loginRoot));
                     stage.show();
@@ -56,15 +76,23 @@ public class LandingController implements Observer {
         });
     }
 
+
     @Override
     public void update(Observable o, Object arg) {
         if(o instanceof Client){
-            if(arg instanceof SignUpResponse){
-                SignUpResponse response = (SignUpResponse)arg;
-                if(response.isSuccess()){
-                    stage.close();
-                }
+            if(arg instanceof SignUpSuccess){
+                signupController.signupSuccess();
             }
+            else if(arg instanceof SignUpFail){
+                signupController.signupFail((SignUpFail)arg);
+            }
+            else if(arg instanceof LoginSuccess){
+                loginController.loginSuccess();
+            }
+            else if(arg instanceof LoginFail){
+                loginController.loginFail((LoginFail)arg);
+            }
+
         }
     }
 }
