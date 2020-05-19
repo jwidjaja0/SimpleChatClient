@@ -24,10 +24,13 @@ public class ClientReceive implements Runnable {
         try {
             ObjectInputStream oiStream = new ObjectInputStream(connection.getInputStream());
             while(true){
-                Packet packet = (Packet) oiStream.readObject();
-                incomingQueue.add(packet);
+                Packet packet = (Packet)oiStream.readObject();
+                incomingQueue.put(packet);
+                System.out.println("Added packet to incomingQueue type: " + packet.getMessageType());
             }
         } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         } finally{
             System.out.println("ClientReceive closing");

@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sample.UI.Landing.LandingController;
 
 public class Main extends Application {
 
@@ -12,9 +13,13 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Client client = new Client();
 
-        Parent root = FXMLLoader.load(getClass().getResource("UI/Landing/Landing.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("UI/Landing/Landing.fxml"));
+        Parent root = loader.load();
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root));
+
+        LandingController landingController = loader.getController();
+        client.addObserver(landingController);
         primaryStage.show();
     }
 
