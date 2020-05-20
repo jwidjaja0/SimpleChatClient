@@ -6,7 +6,6 @@ import com.SimpleChat.Messages.Login.LoginSuccess;
 import com.SimpleChat.Messages.Login.SignUpFail;
 import com.SimpleChat.Messages.Login.SignUpSuccess;
 import com.SimpleChat.Messages.Packet;
-import javafx.application.Platform;
 import sample.UI.Alert.AlertBox;
 
 import java.io.IOException;
