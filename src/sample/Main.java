@@ -1,10 +1,12 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import sample.UI.Landing.LandingController;
 
 public class Main extends Application {
@@ -20,11 +22,21 @@ public class Main extends Application {
 
         LandingController landingController = loader.getController();
         client.addObserver(landingController);
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                closeProgram();
+            }
+        });
         primaryStage.show();
     }
 
     public static void main(String[] args) {
 
         launch(args);
+    }
+
+    private void closeProgram(){
+
     }
 }
