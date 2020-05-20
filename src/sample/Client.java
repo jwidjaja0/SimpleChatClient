@@ -70,29 +70,19 @@ public class Client extends Observable implements Runnable {
         Serializable message = packet.getMessage();
         if(message instanceof SignUpSuccess){
             System.out.println("Sign Up Success!");
-            setChanged();
-            notifyObservers(packet.getMessage());
         }
         else if(message instanceof SignUpFail){
-//            SignUpFail signUpFail = (SignUpFail)message;
-//            String fail = FailHandler.getCause(signUpFail);
-//            AlertBox.display("Sign Up Fail", fail);
             System.out.println("SignUpFail");
-            setChanged();
-            notifyObservers(message);
         }
         else if(message instanceof LoginSuccess){
             System.out.println("login response");
             clientID = packet.getUserID();
-            setChanged();
-            notifyObservers(message);
         }
         else if(message instanceof LoginFail){
             System.out.println("Login fail");
-            setChanged();
-            notifyObservers(message);
-
         }
+        setChanged();
+        notifyObservers(message);
 
 //        if(message instanceof SignUpResponse){
 //            SignUpResponse response = (SignUpResponse)packet.getMessage();

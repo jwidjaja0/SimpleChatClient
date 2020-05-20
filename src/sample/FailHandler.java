@@ -25,12 +25,9 @@ public class FailHandler {
         int failNumber = loginFail.getFailCause();
         switch(failNumber){
             case -1:
-                message = "Username does not exist";
-                break;
-            case -2:
                 message = "Wrong password";
                 break;
-            case -3:
+            case -2:
                 message = "Inactive account";
                 break;
         }
