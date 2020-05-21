@@ -12,10 +12,7 @@ public class FailHandler {
         int failNumber = signUpFail.getFailCause();
         switch (failNumber){
             case -1:
-                message = "Wrong password/Username doesn't exist";
-                break;
-            case -2:
-                message = "Account inactive";
+                message = "Username already exist";
                 break;
         }
         return message;

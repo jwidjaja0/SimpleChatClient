@@ -4,6 +4,7 @@ import com.SimpleChat.Messages.Login.LoginFail;
 import com.SimpleChat.Messages.Login.LoginSuccess;
 import com.SimpleChat.Messages.Login.SignUpFail;
 import com.SimpleChat.Messages.Login.SignUpSuccess;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -67,15 +68,22 @@ public class SplashScreenController {
         });
     }
 
+    private void close(){
+        Platform.runLater(() -> ((Stage)login.getScene().getWindow()).close());
+
+    }
+
     public void messageProcessor(Object arg){
         if(arg instanceof SignUpSuccess){
             signupController.signupSuccess();
+            close();
         }
         else if(arg instanceof SignUpFail){
             signupController.signupFail((SignUpFail)arg);
         }
         else if(arg instanceof LoginSuccess){
             loginController.loginSuccess();
+            close();
         }
         else if(arg instanceof LoginFail){
             loginController.loginFail((LoginFail)arg);
