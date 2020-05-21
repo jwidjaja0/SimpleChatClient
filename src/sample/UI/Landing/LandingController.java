@@ -39,7 +39,6 @@ public class LandingController implements Observer {
     private SignupController signupController;
 
     private String clientID;
-
     private SplashScreenController splashScreenController;
 
     public void initialize(){
