@@ -8,34 +8,39 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="567.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.UI.Landing.LandingController">
+
+<AnchorPane fx:id="myPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.UI.Landing.LandingController">
    <children>
-      <MenuBar>
-        <menus>
-          <Menu mnemonicParsing="false" text="Account">
-            <items>
-                  <MenuItem fx:id="loginRegisterItem" mnemonicParsing="false" text="Login/Register" />
-              <MenuItem fx:id="signOutItem" mnemonicParsing="false" text="SignOut" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Profile">
-            <items>
-              <MenuItem fx:id="personalItem" mnemonicParsing="false" text="Personal Information" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem fx:id="aboutItem" mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <AnchorPane prefHeight="452.0" prefWidth="600.0">
+      <VBox fx:id="vertBox" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="567.0">
          <children>
-            <ListView fx:id="roomList" layoutX="25.0" layoutY="29.0" prefHeight="318.0" prefWidth="318.0" />
-            <Button fx:id="newRoomButton" layoutX="360.0" layoutY="29.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="188.0" text="Create New Chatroom" />
-            <Button fx:id="jonButton" layoutX="360.0" layoutY="69.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="188.0" text="Join Chatroom" />
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="Account">
+                  <items>
+                        <MenuItem fx:id="loginRegisterItem" mnemonicParsing="false" text="Login/Register" />
+                    <MenuItem fx:id="signOutItem" mnemonicParsing="false" text="SignOut" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Profile">
+                  <items>
+                    <MenuItem fx:id="personalItem" mnemonicParsing="false" text="Personal Information" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem fx:id="aboutItem" mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <AnchorPane prefHeight="452.0" prefWidth="600.0">
+               <children>
+                  <ListView fx:id="roomList" layoutX="25.0" layoutY="29.0" prefHeight="318.0" prefWidth="318.0" />
+                  <Button fx:id="newRoomButton" layoutX="360.0" layoutY="29.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="188.0" text="Create New Chatroom" />
+                  <Button fx:id="jonButton" layoutX="360.0" layoutY="69.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="188.0" text="Join Chatroom" />
+               </children>
+            </AnchorPane>
          </children>
-      </AnchorPane>
+      </VBox>
    </children>
-</VBox>
+</AnchorPane>

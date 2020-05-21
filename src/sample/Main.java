@@ -21,13 +21,10 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
 
         LandingController landingController = loader.getController();
+        landingController.setClose();
+
         client.addObserver(landingController);
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                closeProgram();
-            }
-        });
+
         primaryStage.show();
     }
 
@@ -36,7 +33,5 @@ public class Main extends Application {
         launch(args);
     }
 
-    private void closeProgram(){
 
-    }
 }

@@ -3,7 +3,6 @@ package sample.UI.Landing;
 import com.SimpleChat.Messages.Interfaces.Login;
 import com.SimpleChat.Messages.Login.LogOutRequest;
 import com.SimpleChat.Messages.Login.LoginSuccess;
-import com.SimpleChat.Messages.Packet;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -11,9 +10,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import sample.Client;
 import sample.OutgoingSingleton;
+import sample.UI.Alert.ConfirmBox;
 import sample.UI.Login.LoginController;
 import sample.UI.Login.SignupController;
 import sample.UI.SplashScreen.SplashScreenController;
@@ -30,7 +32,9 @@ public class LandingController implements Observer {
     @FXML MenuItem personalItem;
     @FXML MenuItem aboutItem;
 
-    private Stage thisStage;
+    @FXML AnchorPane myPane;
+
+    private Stage pStage;
     private LoginController loginController;
     private SignupController signupController;
 
@@ -39,13 +43,8 @@ public class LandingController implements Observer {
     private SplashScreenController splashScreenController;
 
     public void initialize(){
-        loginRegisterItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                loginRegister();
-            }
-        });
 
+        loginRegisterItem.setOnAction(actionEvent -> loginRegister());
         signOutItem.setDisable(true);
         signOutItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -55,6 +54,29 @@ public class LandingController implements Observer {
             }
         });
 
+    }
+
+    public void setClose(){
+        System.out.println("Set close called");
+        pStage = (Stage)myPane.getScene().getWindow();
+        pStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                windowEvent.consume();
+                closeProgram();
+            }
+        });
+
+    }
+
+    private void closeProgram(){
+        Boolean answer = ConfirmBox.display("Exit", "Confirm close program?");
+        if(answer){
+            if(clientID != null){
+                OutgoingSingleton.getInstance().sendMessage("Login", new LogOutRequest());
+            }
+            System.exit(0);
+        }
     }
 
     public void setClientID(String clientID){
