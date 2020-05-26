@@ -2,57 +2,48 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
 
-<VBox alignment="TOP_CENTER" prefHeight="708.0" prefWidth="453.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="708.0" prefWidth="804.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.simplechat.UI.Room.RoomController">
    <children>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ChatRoomName">
-         <VBox.margin>
-            <Insets bottom="10.0" top="10.0" />
-         </VBox.margin>
-      </Text>
-      <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="123.0" prefWidth="427.0">
+      <Text fx:id="roomNameText" layoutX="358.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ChatRoomName" wrappingWidth="87.662109375" />
+      <HBox layoutY="44.0">
          <children>
-            <ImageView fitHeight="129.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
-               <HBox.margin>
-                  <Insets left="5.0" right="5.0" />
-               </HBox.margin>
-            </ImageView>
-            <Pane prefHeight="129.0" prefWidth="335.0">
+            <VBox alignment="TOP_CENTER" prefHeight="664.0" prefWidth="580.0">
                <children>
-                  <Text layoutX="110.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
+                  <TextArea fx:id="textBox" prefHeight="491.0" prefWidth="570.0">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" top="10.0" />
+                     </VBox.margin>
+                  </TextArea>
+                  <HBox alignment="CENTER_LEFT" prefHeight="138.0" prefWidth="453.0">
+                     <children>
+                        <TextField fx:id="chatField" alignment="TOP_LEFT" prefHeight="119.0" prefWidth="490.0" />
+                        <AnchorPane prefHeight="138.0" prefWidth="149.0">
+                           <children>
+                              <Button fx:id="sendButton" layoutX="47.0" layoutY="56.0" mnemonicParsing="false" onAction="#sendChat" text="Send" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
                </children>
-            </Pane>
-         </children>
-      </HBox>
-      <TextArea prefHeight="376.0" prefWidth="427.0">
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" top="10.0" />
-         </VBox.margin>
-      </TextArea>
-      <HBox alignment="CENTER_LEFT" prefHeight="138.0" prefWidth="453.0">
-         <children>
-            <TextArea prefHeight="137.0" prefWidth="303.0">
+            </VBox>
+            <ListView fx:id="userList" prefHeight="546.0" prefWidth="210.0">
                <HBox.margin>
-                  <Insets left="5.0" right="5.0" />
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                </HBox.margin>
-            </TextArea>
-            <AnchorPane prefHeight="138.0" prefWidth="149.0">
-               <children>
-                  <Button layoutX="47.0" layoutY="56.0" mnemonicParsing="false" text="Send" />
-               </children>
-            </AnchorPane>
+            </ListView>
          </children>
-         <VBox.margin>
-            <Insets top="10.0" />
-         </VBox.margin>
       </HBox>
    </children>
-</VBox>
+</AnchorPane>

@@ -12,11 +12,14 @@ public class ClientReceive implements Runnable {
     Socket connection;
     private BlockingQueue<Packet> incomingQueue;
 
-    public ClientReceive(Socket connection, BlockingQueue<Packet> incomingQueue) {
-        this.connection = connection;
+    public ClientReceive(BlockingQueue<Packet> incomingQueue) {
         this.incomingQueue = incomingQueue;
         Thread thread = new Thread(this);
         thread.start();
+    }
+
+    public void setConnection(Socket connection) {
+        this.connection = connection;
     }
 
     @Override

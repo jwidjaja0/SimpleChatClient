@@ -1,5 +1,6 @@
 package com.simplechat.Client;
 
+import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Interfaces.Login;
 import com.SimpleChat.Messages.Login.LoginFail;
 import com.SimpleChat.Messages.Login.LoginSuccess;
@@ -37,9 +38,6 @@ public class Client extends Observable implements Runnable {
         chatroomList = new ArrayList<>();
         outgoingQueue = new ArrayBlockingQueue<>(100);
         incomingQueue = new ArrayBlockingQueue<>(100);
-
-        clientReceive = new ClientReceive(serverConnection, incomingQueue);
-        clientSend = new ClientSend(serverConnection, outgoingQueue);
         messageHandler = new MessageHandler(this);
 
         OutgoingSingleton.getInstance().setOutgoingQueue(outgoingQueue);
@@ -63,6 +61,15 @@ public class Client extends Observable implements Runnable {
         if(packet.getMessage() instanceof Login){
             handleLoginMessage(packet);
         }
+        else if(packet.getMessage() instanceof Chat){
+            handleChatMessage(packet);
+        }
+    }
+
+    protected void handleChatMessage(Packet packet) {
+        Serializable message = packet.getMessage();
+        setChanged();
+        notifyObservers(message);
     }
 
     protected void handleLoginMessage(Packet packet) {
@@ -100,16 +107,22 @@ public class Client extends Observable implements Runnable {
 
     @Override
     public void run() {
+        try {
+            serverConnection = new Socket("localhost", 8000);
+            clientReceive = new ClientReceive(incomingQueue);
+            clientSend = new ClientSend(outgoingQueue);
+            clientSend.setSocket(serverConnection);
+            clientReceive.setConnection(serverConnection);
+        } catch (IOException e) {
+            System.out.println("No connection");
+//            e.printStackTrace();
+        }
         System.out.println("run start for client");
+
         while(true){
             try {
                 Packet packet = incomingQueue.take();
                 handleMessage(packet);
-//                if(packet.getMessage() instanceof Login){
-//                    System.out.println("instance of login");
-//                }
-//                System.out.println("Received message type: " + packet.getMessageType());
-//                messageHandler.handleMessage(packet);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

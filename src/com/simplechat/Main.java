@@ -8,13 +8,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        Client client = new Client();
+    public void start(Stage primaryStage) throws IOException {
+
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("UI/Landing/Landing.fxml"));
+        //com\simplechat\UI\Landing\Landing.fxml
         Parent root = loader.load();
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root));
@@ -22,9 +25,17 @@ public class Main extends Application {
         LandingController landingController = loader.getController();
         landingController.setClose();
 
-        client.addObserver(landingController);
-
         primaryStage.show();
+
+        Client client = null;
+        try {
+            client = new Client();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("adding observer");
+        client.addObserver(landingController);
     }
 
     public static void main(String[] args) {

@@ -1,5 +1,7 @@
 package com.simplechat.UI.Landing;
 
+import com.SimpleChat.Messages.Chat.JoinChatroomRequest;
+import com.SimpleChat.Messages.Chat.NewChatroomSuccess;
 import com.SimpleChat.Messages.Interfaces.Login;
 import com.SimpleChat.Messages.Login.LogOutRequest;
 import com.SimpleChat.Messages.Login.LoginSuccess;
@@ -7,12 +9,14 @@ import com.simplechat.Client.OutgoingSingleton;
 import com.simplechat.UI.Login.LoginController;
 import com.simplechat.UI.Login.SignupController;
 import com.simplechat.UI.SplashScreen.SplashScreenController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -33,13 +37,17 @@ public class LandingController implements Observer {
     @FXML MenuItem aboutItem;
 
     @FXML AnchorPane myPane;
-
-    private Stage pStage;
-    private LoginController loginController;
-    private SignupController signupController;
+    @FXML Button newRoomButton;
+    @FXML Button joinButton;
 
     private String clientID;
+
+    private Stage pStage;
+
+    private LoginController loginController;
+    private SignupController signupController;
     private SplashScreenController splashScreenController;
+    private NewRoomRequestController newRoomRequestController;
 
     public void initialize(){
 
@@ -53,10 +61,16 @@ public class LandingController implements Observer {
             }
         });
 
+        newRoomButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                newRoomRequest();
+            }
+        });
+
     }
 
     public void setClose(){
-        System.out.println("Set close called");
         pStage = (Stage)myPane.getScene().getWindow();
         pStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -84,7 +98,7 @@ public class LandingController implements Observer {
 
     private void loginRegister(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../SplashScreen/SplashScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/simpleChat/UI/SplashScreen/SplashScreen.fxml"));
             Parent window = loader.load();
             splashScreenController = loader.getController();
             Stage stage = new Stage();
@@ -94,9 +108,39 @@ public class LandingController implements Observer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
+    private void newRoomRequest(){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/simpleChat/UI/Landing/NewRoomRequest.fxml"));
+        try {
+            Parent window = loader.load();
+            newRoomRequestController = loader.getController();
+            Stage stage = new Stage();
+            stage.setTitle("New Chatroom");
+            stage.setScene(new Scene(window));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createNewRoom(String chatroomName){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/simpleChat/UI/Room/Room.fxml"));
+                try {
+                    Parent parent = loader.load();
+                    Stage stage = new Stage();
+                    stage.setTitle(chatroomName);
+                    stage.setScene(new Scene(parent));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -105,9 +149,21 @@ public class LandingController implements Observer {
                 clientID = ((LoginSuccess)arg).getClientID();
                 signOutItem.setDisable(false);
                 loginRegisterItem.setDisable(true);
+
             }
             if(arg instanceof Login){
                 splashScreenController.messageProcessor(arg);
+            }
+
+            if(arg instanceof NewChatroomSuccess){
+                newRoomRequestController.closeWindow(); //close request window
+
+                //success creating new chatroom, send request to join automatically, open new room for client
+                NewChatroomSuccess success = (NewChatroomSuccess)arg;
+                OutgoingSingleton.getInstance().sendMessage("Chat", new JoinChatroomRequest(success.getName(), success.getPassword()));
+
+                //now create the room
+                createNewRoom(success.getName());
             }
 
         }

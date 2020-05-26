@@ -11,8 +11,7 @@ public class ClientSend implements Runnable{
     private Socket socket;
     private BlockingQueue<Packet> outgoingQueue;
 
-    public ClientSend(Socket socket, BlockingQueue<Packet> outgoingQueue) {
-        this.socket = socket;
+    public ClientSend(BlockingQueue<Packet> outgoingQueue) {
         this.outgoingQueue = outgoingQueue;
         System.out.println("clientSend started");
 
@@ -20,10 +19,15 @@ public class ClientSend implements Runnable{
         self.start();
     }
 
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
     @Override
     public void run() {
 
         try {
+            //If no connection, throwsNullPointerException, TODO: add handling of NullPointerException
             ObjectOutputStream toServer = new ObjectOutputStream(socket.getOutputStream());
             while(true){
                 System.out.println("Sending message to server");
