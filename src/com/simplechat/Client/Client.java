@@ -19,8 +19,9 @@ import java.util.concurrent.BlockingQueue;
 
 public class Client extends Observable implements Runnable {
     private Socket serverConnection;
-    private String username;
     private String clientID;
+
+    private ClientInfo clientInfo;
 
     private ClientReceive clientReceive;
     private ClientSend clientSend;
@@ -43,6 +44,14 @@ public class Client extends Observable implements Runnable {
         OutgoingSingleton.getInstance().setOutgoingQueue(outgoingQueue);
         thread = new Thread(this);
         thread.start();
+    }
+
+    public ClientInfo getClientInfo() {
+        return clientInfo;
+    }
+
+    public void setClientInfo(ClientInfo clientInfo) {
+        this.clientInfo = clientInfo;
     }
 
     public void setChangeStatus(){
@@ -83,6 +92,7 @@ public class Client extends Observable implements Runnable {
         else if(message instanceof LoginSuccess){
             System.out.println("login response");
             clientID = packet.getUserID();
+            clientInfo.setClientID(packet.getUserID());
         }
         else if(message instanceof LoginFail){
             System.out.println("Login fail");
@@ -90,19 +100,6 @@ public class Client extends Observable implements Runnable {
         setChanged();
         notifyObservers(message);
 
-//        if(message instanceof SignUpResponse){
-//            SignUpResponse response = (SignUpResponse)packet.getMessage();
-//            if(response.isSuccess()){
-//                AlertBox.display("Confirmation", "Sign Up Success!");
-//                client.setChangeStatus();
-//                client.notifyObservers(response);
-//            }
-//            else{
-//                int failCause = response.getFailCause();
-//                String s = FailHandler.handleFail(failCause);
-//                AlertBox.display("Error", s);
-//            }
-//        }
     }
 
     @Override
