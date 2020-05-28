@@ -2,6 +2,7 @@ package com.simplechat.UI.Landing;
 
 import com.SimpleChat.Messages.Chat.ChatMessage;
 import com.SimpleChat.Messages.Chat.JoinChatroomRequest;
+import com.SimpleChat.Messages.Chat.JoinChatroomSuccess;
 import com.SimpleChat.Messages.Chat.NewChatroomSuccess;
 import com.SimpleChat.Messages.Interfaces.Login;
 import com.SimpleChat.Messages.Login.LogOutRequest;
@@ -56,11 +57,9 @@ public class LandingController implements Observer {
     private SplashScreenController splashScreenController;
     private NewRoomRequestController newRoomRequestController;
 
-    private List<RoomController> roomControllerList;
 
     public void initialize(){
 
-        roomControllerList = new ArrayList<>();
 
         loginRegisterItem.setOnAction(actionEvent -> loginRegister());
         signOutItem.setDisable(true);
@@ -135,10 +134,11 @@ public class LandingController implements Observer {
         }
     }
 
-    private void createNewRoom(String chatroomName, ClientInfo clientInfo){
+    private void createNewRoom(ClientInfo clientInfo, JoinChatroomSuccess joinChatroomSuccess, Client client){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                String chatroomName = joinChatroomSuccess.getChatroomDetail().getChatroomName();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/simpleChat/UI/Room/Room.fxml"));
                 try {
                     Parent parent = loader.load();
@@ -149,7 +149,8 @@ public class LandingController implements Observer {
                     RoomController roomController = loader.getController();
                     roomController.setRoomName(chatroomName);
                     roomController.setClientInfo(clientInfo);
-                    roomControllerList.add(roomController);
+                    client.addObserver(roomController); //roomcontroller to observe chatroom
+//                    roomControllerList.add(roomController);
 
                     stage.show();
                 } catch (IOException e) {
@@ -159,13 +160,6 @@ public class LandingController implements Observer {
         });
     }
 
-    void addMessage(ChatMessage chatMessage){
-        for(RoomController rc : roomControllerList){
-            if(rc.getRoomName().equals(chatMessage.getChatroomName())){
-
-            }
-        }
-    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -185,10 +179,16 @@ public class LandingController implements Observer {
 
                 //success creating new chatroom, send request to join automatically, open new room for client
                 NewChatroomSuccess success = (NewChatroomSuccess)arg;
-                OutgoingSingleton.getInstance().sendMessage("Chat", new JoinChatroomRequest(success.getName(), success.getPassword()));
+                OutgoingSingleton.getInstance().sendMessage("Chat", new JoinChatroomRequest(success.getRoomName(), success.getPassword()));
 
-                //now create the room
-                createNewRoom(success.getName(), clientInfo);
+//                //now create the room
+//                createNewRoom(success.getName(), clientInfo);
+            }
+
+            if(arg instanceof JoinChatroomSuccess){
+                //create new room and put myself there
+                JoinChatroomSuccess success = (JoinChatroomSuccess)arg;
+                createNewRoom(clientInfo, success, (Client)o);
 
             }
 

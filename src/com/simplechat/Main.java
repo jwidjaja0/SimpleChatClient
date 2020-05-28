@@ -36,6 +36,7 @@ public class Main extends Application {
 
         System.out.println("adding observer");
         client.addObserver(landingController);
+
     }
 
     public static void main(String[] args) {

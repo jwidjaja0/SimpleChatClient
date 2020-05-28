@@ -1,5 +1,6 @@
 package com.simplechat.Client;
 
+import com.SimpleChat.Messages.Chat.JoinChatroomSuccess;
 import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Interfaces.Login;
 import com.SimpleChat.Messages.Login.LoginFail;
@@ -66,6 +67,7 @@ public class Client extends Observable implements Runnable {
         this.clientID = clientID;
     }
 
+    //Observer:LandingController
     protected void handleMessage(Packet packet){
         if(packet.getMessage() instanceof Login){
             handleLoginMessage(packet);
@@ -77,9 +79,25 @@ public class Client extends Observable implements Runnable {
 
     protected void handleChatMessage(Packet packet) {
         Serializable message = packet.getMessage();
+
+        if(message instanceof JoinChatroomSuccess){
+            JoinChatroomSuccess joinChatroomSuccess = (JoinChatroomSuccess)message;
+            //Create new chatroom
+            Chatroom chatroom = new Chatroom(joinChatroomSuccess.getChatroomDetail().getChatroomName());
+            chatroomList.add(chatroom);
+
+            //tell landing to make chatroom, make chatroomController oberver this chatroom
+            setChanged();
+            notifyObservers(message);
+
+            //
+        }
+
         setChanged();
         notifyObservers(message);
     }
+
+
 
     protected void handleLoginMessage(Packet packet) {
         Serializable message = packet.getMessage();

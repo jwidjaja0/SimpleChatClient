@@ -1,6 +1,7 @@
 package com.simplechat.UI.Room;
 
 import com.SimpleChat.Messages.Chat.ChatMessage;
+import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Interfaces.User;
 import com.SimpleChat.Messages.User.UserInfo;
 import com.simplechat.Client.ClientInfo;
@@ -13,7 +14,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.event.ActionEvent;
 
-public class RoomController {
+import java.util.Observable;
+import java.util.Observer;
+
+public class RoomController implements Observer {
 
     @FXML
     private Text roomNameText;
@@ -34,6 +38,7 @@ public class RoomController {
     private ClientInfo clientInfo;
 
     public void initialize(){
+
         chatArea.setEditable(false);
     }
 
@@ -75,5 +80,12 @@ public class RoomController {
 
     public void setClientInfo(ClientInfo clientInfo) {
         this.clientInfo = clientInfo;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if(arg instanceof ChatMessage){
+
+        }
     }
 }

@@ -10,14 +10,13 @@ import java.util.concurrent.BlockingQueue;
 public class Chatroom {
     private String chatroomName;
     private List<ChatMessage> chatMessageList;
-    private BlockingQueue<Packet> outgoingMessage;
 
-    public Chatroom(String chatroomName, BlockingQueue<Packet> outgoingMessage) {
+    public Chatroom(String chatroomName) {
         this.chatroomName = chatroomName;
-        this.outgoingMessage = outgoingMessage;
         chatMessageList = new ArrayList<>();
-
     }
+
+
 
 
 }
