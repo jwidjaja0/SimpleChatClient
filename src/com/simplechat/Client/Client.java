@@ -42,6 +42,7 @@ public class Client extends Observable implements Runnable {
         incomingQueue = new ArrayBlockingQueue<>(100);
         messageHandler = new MessageHandler(this);
 
+        clientInfo = new ClientInfo();
         OutgoingSingleton.getInstance().setOutgoingQueue(outgoingQueue);
         thread = new Thread(this);
         thread.start();

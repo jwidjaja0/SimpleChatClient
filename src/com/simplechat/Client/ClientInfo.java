@@ -4,6 +4,9 @@ public class ClientInfo {
     private String nickname;
     private String clientID;
 
+    public ClientInfo() {
+    }
+
     public ClientInfo(String nickname, String clientID) {
         this.nickname = nickname;
         this.clientID = clientID;
