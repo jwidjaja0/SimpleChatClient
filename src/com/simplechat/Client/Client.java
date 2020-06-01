@@ -3,11 +3,10 @@ package com.simplechat.Client;
 import com.SimpleChat.Messages.Chat.JoinChatroomSuccess;
 import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Interfaces.Login;
-import com.SimpleChat.Messages.Login.LoginFail;
-import com.SimpleChat.Messages.Login.LoginSuccess;
-import com.SimpleChat.Messages.Login.SignUpFail;
-import com.SimpleChat.Messages.Login.SignUpSuccess;
+import com.SimpleChat.Messages.Interfaces.User;
+import com.SimpleChat.Messages.Login.*;
 import com.SimpleChat.Messages.Packet;
+import com.SimpleChat.Messages.User.UserInfo;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -20,7 +19,6 @@ import java.util.concurrent.BlockingQueue;
 
 public class Client extends Observable implements Runnable {
     private Socket serverConnection;
-    private String clientID;
 
     private ClientInfo clientInfo;
 
@@ -44,6 +42,8 @@ public class Client extends Observable implements Runnable {
 
         clientInfo = new ClientInfo();
         OutgoingSingleton.getInstance().setOutgoingQueue(outgoingQueue);
+        OutgoingSingleton.getInstance().setClientInfo(clientInfo);
+
         thread = new Thread(this);
         thread.start();
     }
@@ -58,14 +58,6 @@ public class Client extends Observable implements Runnable {
 
     public void setChangeStatus(){
         setChanged();
-    }
-
-    public String getClientID() {
-        return clientID;
-    }
-
-    public void setClientID(String clientID) {
-        this.clientID = clientID;
     }
 
     //Observer:LandingController
@@ -84,20 +76,27 @@ public class Client extends Observable implements Runnable {
         if(message instanceof JoinChatroomSuccess){
             JoinChatroomSuccess joinChatroomSuccess = (JoinChatroomSuccess)message;
             //Create new chatroom
-            Chatroom chatroom = new Chatroom(joinChatroomSuccess.getChatroomDetail().getChatroomName());
+            Chatroom chatroom = new Chatroom(joinChatroomSuccess, clientInfo);
             chatroomList.add(chatroom);
 
-            //tell landing to make chatroom, make chatroomController oberver this chatroom
-//            setChanged();
-//            notifyObservers(message);
 
-            //
         }
 
+        //bad, need to let this class handle sending the JoinRoomRequest instead of landingController
         setChanged();
         notifyObservers(message);
+
+
     }
 
+    public Chatroom findChatroomByName(String roomName){
+        for(Chatroom ch: chatroomList){
+            if(ch.getChatroomName().equals(roomName)){
+                return ch;
+            }
+        }
+        return null;
+    }
 
 
     protected void handleLoginMessage(Packet packet) {
@@ -110,12 +109,20 @@ public class Client extends Observable implements Runnable {
         }
         else if(message instanceof LoginSuccess){
             System.out.println("login response");
-            clientID = packet.getUserID();
-            clientInfo.setClientID(packet.getUserID());
+
+            LoginSuccess loginSuccess = (LoginSuccess)packet.getMessage();
+            UserInfo userInfo = loginSuccess.getUserInfo();
+            clientInfo.setNickname(userInfo.getNickname());
+            clientInfo.setClientID(userInfo.getClientID());
+
         }
         else if(message instanceof LoginFail){
             System.out.println("Login fail");
         }
+        else if(message instanceof LogOutSuccess){
+            clientInfo.setClientID("");
+        }
+
         setChanged();
         notifyObservers(message);
 
@@ -127,6 +134,8 @@ public class Client extends Observable implements Runnable {
         clientSend = new ClientSend(outgoingQueue);
         clientSend.setSocket(serverConnection);
         clientReceive.setConnection(serverConnection);
+
+//        OutgoingSingleton.getInstance().setUserID(clientID);
         System.out.println("run start for client");
 
         while(true){

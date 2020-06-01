@@ -1,5 +1,6 @@
 package com.simplechat.Client;
 
+import com.SimpleChat.Messages.Login.LogOutRequest;
 import com.SimpleChat.Messages.Packet;
 
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.util.concurrent.BlockingQueue;
 public class OutgoingSingleton {
 
     private static OutgoingSingleton instance = new OutgoingSingleton();
-    private String userID;
+    private ClientInfo clientInfo;
     private BlockingQueue<Packet> outgoingQueue;
 
     private OutgoingSingleton(){
@@ -20,22 +21,23 @@ public class OutgoingSingleton {
 
     public void sendMessage(String messageType, Serializable message){
         try {
+
             System.out.println("singleton putting to queue");
-            outgoingQueue.put(new Packet(messageType, userID, message));
+            outgoingQueue.put(new Packet(messageType, clientInfo.getClientID(), message));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public void logOut(){
-        userID = null;
     }
 
     public void setOutgoingQueue(BlockingQueue<Packet> outgoingQueue) {
         this.outgoingQueue = outgoingQueue;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setClientInfo(ClientInfo clientInfo) {
+        this.clientInfo = clientInfo;
+    }
+
+    public ClientInfo getClientInfo() {
+        return clientInfo;
     }
 }

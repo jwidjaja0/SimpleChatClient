@@ -4,6 +4,7 @@ import com.SimpleChat.Messages.Chat.ChatMessage;
 import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Interfaces.User;
 import com.SimpleChat.Messages.User.UserInfo;
+import com.simplechat.Client.Chatroom;
 import com.simplechat.Client.ClientInfo;
 import com.simplechat.Client.OutgoingSingleton;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.event.ActionEvent;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -32,7 +34,7 @@ public class RoomController implements Observer {
     private Button sendButton;
 
     @FXML
-    private ListView<?> userList;
+    private ListView<UserInfo> userList;
 
     private String roomName;
     private ClientInfo clientInfo;
@@ -66,6 +68,10 @@ public class RoomController implements Observer {
         chatArea.setText(builder.toString()); //not Tested;
     }
 
+    public void showUsers(){
+
+    }
+
     public String getRoomName() {
         return roomName;
     }
@@ -84,7 +90,10 @@ public class RoomController implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if(arg instanceof ChatMessage){
+        if(arg instanceof String && arg.equals("Update")){
+            Chatroom chatroom = (Chatroom)o;
+            userList.getItems().addAll(chatroom.getUserInfoList());
+
 
         }
     }

@@ -5,6 +5,8 @@ public class ClientInfo {
     private String clientID;
 
     public ClientInfo() {
+        nickname = "";
+        clientID = "";
     }
 
     public ClientInfo(String nickname, String clientID) {

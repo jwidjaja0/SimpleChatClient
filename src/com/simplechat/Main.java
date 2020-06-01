@@ -34,6 +34,7 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
+        landingController.setClientInfo(client.getClientInfo());
         System.out.println("adding observer");
         client.addObserver(landingController);
 

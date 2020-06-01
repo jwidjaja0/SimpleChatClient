@@ -5,9 +5,11 @@ import com.SimpleChat.Messages.Chat.JoinChatroomRequest;
 import com.SimpleChat.Messages.Chat.JoinChatroomSuccess;
 import com.SimpleChat.Messages.Chat.NewChatroomSuccess;
 import com.SimpleChat.Messages.Interfaces.Login;
+import com.SimpleChat.Messages.Interfaces.User;
 import com.SimpleChat.Messages.Login.LogOutRequest;
 import com.SimpleChat.Messages.Login.LoginSuccess;
 import com.SimpleChat.Messages.User.UserInfo;
+import com.simplechat.Client.Chatroom;
 import com.simplechat.Client.ClientInfo;
 import com.simplechat.Client.OutgoingSingleton;
 import com.simplechat.UI.Login.LoginController;
@@ -106,6 +108,10 @@ public class LandingController implements Observer {
         this.clientID = clientID;
     }
 
+    public void setClientInfo(ClientInfo clientInfo) {
+        this.clientInfo = clientInfo;
+    }
+
     private void loginRegister(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/simpleChat/UI/SplashScreen/SplashScreen.fxml"));
@@ -149,7 +155,11 @@ public class LandingController implements Observer {
                     RoomController roomController = loader.getController();
                     roomController.setRoomName(chatroomName);
                     roomController.setClientInfo(clientInfo);
-                    client.addObserver(roomController); //roomcontroller to observe chatroom
+
+                    Chatroom ch = client.findChatroomByName(chatroomName);
+                    ch.addObserver(roomController);
+                    ch.updateUIMessageUsers();
+
 //                    roomControllerList.add(roomController);
 
                     stage.show();
@@ -165,7 +175,15 @@ public class LandingController implements Observer {
     public void update(Observable o, Object arg) {
         if(o instanceof Client){
             if(arg instanceof LoginSuccess){
-                clientID = ((LoginSuccess)arg).getClientID();
+                LoginSuccess loginSuccess = (LoginSuccess)arg;
+                UserInfo userInfo = loginSuccess.getUserInfo();
+
+                //TODO:Remove clientID reference, use ClientInfo
+                clientID = userInfo.getClientID();
+
+                clientInfo.setClientID(userInfo.getClientID());
+                clientInfo.setNickname(userInfo.getNickname());
+
                 signOutItem.setDisable(false);
                 loginRegisterItem.setDisable(true);
 
@@ -179,7 +197,8 @@ public class LandingController implements Observer {
 
                 //success creating new chatroom, send request to join automatically, open new room for client
                 NewChatroomSuccess success = (NewChatroomSuccess)arg;
-                OutgoingSingleton.getInstance().sendMessage("Chat", new JoinChatroomRequest(success.getRoomName(), success.getPassword()));
+                UserInfo info = new UserInfo(clientInfo.getNickname(), clientInfo.getClientID());
+                OutgoingSingleton.getInstance().sendMessage("Chat", new JoinChatroomRequest(success.getRoomName(), success.getPassword(), info));
 
 //                //now create the room
 //                createNewRoom(success.getName(), clientInfo);
