@@ -29,7 +29,7 @@ public class ClientReceive implements Runnable {
             while(true){
                 Packet packet = (Packet)oiStream.readObject();
                 incomingQueue.put(packet);
-                System.out.println("Added packet to incomingQueue type: " + packet.getClass().getName());
+                System.out.println("Added packet to incomingQueue type: " + packet.getMessage().getClass().getName());
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

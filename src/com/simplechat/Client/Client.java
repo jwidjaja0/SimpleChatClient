@@ -88,8 +88,8 @@ public class Client extends Observable implements Runnable {
             chatroomList.add(chatroom);
 
             //tell landing to make chatroom, make chatroomController oberver this chatroom
-            setChanged();
-            notifyObservers(message);
+//            setChanged();
+//            notifyObservers(message);
 
             //
         }
@@ -123,16 +123,10 @@ public class Client extends Observable implements Runnable {
 
     @Override
     public void run() {
-        try {
-            serverConnection = new Socket("localhost", 8000);
-            clientReceive = new ClientReceive(incomingQueue);
-            clientSend = new ClientSend(outgoingQueue);
-            clientSend.setSocket(serverConnection);
-            clientReceive.setConnection(serverConnection);
-        } catch (IOException e) {
-            System.out.println("No connection");
-//            e.printStackTrace();
-        }
+        clientReceive = new ClientReceive(incomingQueue);
+        clientSend = new ClientSend(outgoingQueue);
+        clientSend.setSocket(serverConnection);
+        clientReceive.setConnection(serverConnection);
         System.out.println("run start for client");
 
         while(true){
