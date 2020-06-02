@@ -24,6 +24,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -48,6 +49,8 @@ public class LandingController implements Observer {
     @FXML AnchorPane myPane;
     @FXML Button newRoomButton;
     @FXML Button joinButton;
+    @FXML
+    ListView roomList;
 
     private String clientID;
     private ClientInfo clientInfo;
@@ -194,6 +197,9 @@ public class LandingController implements Observer {
 
             if(arg instanceof NewChatroomSuccess){
                 newRoomRequestController.closeWindow(); //close request window
+
+                //add newRoom to List of rooms
+                roomList.getItems().add(arg);
 
                 //success creating new chatroom, send request to join automatically, open new room for client
                 NewChatroomSuccess success = (NewChatroomSuccess)arg;
