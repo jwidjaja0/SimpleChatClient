@@ -24,7 +24,12 @@ public class Chatroom extends Observable {
         chatMessageList = joinChatroomSuccess.getChatMessageHistory().getChatMessageList();
 
         this.clientInfo = clientInfo;
+    }
 
+    public void addChatMessage(ChatMessage chatMessage){
+        chatMessageList.add(chatMessage);
+        setChanged();
+        notifyObservers(chatMessage);
     }
 
     public String getChatroomName() {

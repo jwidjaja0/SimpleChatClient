@@ -202,9 +202,7 @@ public class LandingController implements Observer {
                 roomList.getItems().add(arg);
 
                 //success creating new chatroom, send request to join automatically, open new room for client
-                NewChatroomSuccess success = (NewChatroomSuccess)arg;
-                UserInfo info = new UserInfo(clientInfo.getNickname(), clientInfo.getClientID());
-                OutgoingSingleton.getInstance().sendMessage("Chat", new JoinChatroomRequest(success.getRoomName(), success.getPassword(), info));
+
 
 //                //now create the room
 //                createNewRoom(success.getName(), clientInfo);

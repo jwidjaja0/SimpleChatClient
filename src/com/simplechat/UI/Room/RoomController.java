@@ -52,6 +52,7 @@ public class RoomController implements Observer {
 
         ChatMessage message = new ChatMessage(roomName, toSend, userInfo);
         OutgoingSingleton.getInstance().sendMessage("Chat", message);
+        chatField.clear();
     }
 
     public void showChat(ChatMessage chatMessage){
@@ -67,6 +68,8 @@ public class RoomController implements Observer {
 
         chatArea.setText(builder.toString()); //not Tested;
     }
+
+
 
     public void showUsers(){
 
@@ -93,8 +96,9 @@ public class RoomController implements Observer {
         if(arg instanceof String && arg.equals("Update")){
             Chatroom chatroom = (Chatroom)o;
             userList.getItems().addAll(chatroom.getUserInfoList());
-
-
+        }
+        if(arg instanceof ChatMessage){
+            showChat((ChatMessage)arg);
         }
     }
 }

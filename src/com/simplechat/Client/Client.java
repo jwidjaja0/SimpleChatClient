@@ -1,6 +1,9 @@
 package com.simplechat.Client;
 
+import com.SimpleChat.Messages.Chat.ChatMessage;
+import com.SimpleChat.Messages.Chat.JoinChatroomRequest;
 import com.SimpleChat.Messages.Chat.JoinChatroomSuccess;
+import com.SimpleChat.Messages.Chat.NewChatroomSuccess;
 import com.SimpleChat.Messages.Interfaces.Chat;
 import com.SimpleChat.Messages.Interfaces.Login;
 import com.SimpleChat.Messages.Interfaces.User;
@@ -73,16 +76,29 @@ public class Client extends Observable implements Runnable {
     protected void handleChatMessage(Packet packet) {
         Serializable message = packet.getMessage();
 
-        if(message instanceof JoinChatroomSuccess){
+        if(message instanceof NewChatroomSuccess){
+            NewChatroomSuccess success = (NewChatroomSuccess)message;
+            UserInfo info = new UserInfo(clientInfo.getNickname(), clientInfo.getClientID());
+            OutgoingSingleton.getInstance().sendMessage("Chat", new JoinChatroomRequest(success.getRoomName(), success.getPassword(), info));
+        }
+        else if(message instanceof JoinChatroomSuccess){
             JoinChatroomSuccess joinChatroomSuccess = (JoinChatroomSuccess)message;
+
             //Create new chatroom
             Chatroom chatroom = new Chatroom(joinChatroomSuccess, clientInfo);
             chatroomList.add(chatroom);
-
-
+        }
+        else if(message instanceof ChatMessage){
+            ChatMessage cm = (ChatMessage)message;
+            //Find correct chatroom, send ChatMessage there
+            for(Chatroom chatroom:chatroomList){
+                if(chatroom.getChatroomName().equals(cm.getChatroomName())){
+                    chatroom.addChatMessage(cm);
+                }
+            }
         }
 
-        //bad, need to let this class handle sending the JoinRoomRequest instead of landingController
+
         setChanged();
         notifyObservers(message);
 
